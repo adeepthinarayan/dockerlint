@@ -1,0 +1,60 @@
+/* main container */
+.mat-toolbar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #d6ebfe;
+  padding:3.1rem;
+}
+
+/* For reference related */
+.reference{
+  display:flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: left;
+  position:absolute;
+  left:1rem;
+  top:0.6rem;
+}
+
+.reference-para{
+  background-color: #005691;
+  color:#fff;
+  border:2px solid;
+  padding:0.2rem 0.4rem;
+}
+
+.reference-images{
+  width:40px;
+}
+
+.reference-nav{
+  display:flex;
+  gap:0.5rem;
+}
+
+/* DockerLint logo */
+.dockerlint-logo{
+  left:25rem;
+  position: absolute;
+  top:0.4rem;
+}
+
+/* Thinknyx Logo */
+.thinknyx-logo {
+  right:23rem;
+  top:1.6rem;
+  position:absolute;
+}
+
+/* Social media related */
+.social-media{
+  right:1rem;
+  position:absolute;
+
+}
+.social{
+  width:50px;
+  padding-left:0.6rem;
+}
