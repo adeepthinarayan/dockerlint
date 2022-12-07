@@ -77,7 +77,7 @@
   
     <!-- Table display for issues. This will be displayed only if the response contains the issues. -->
     <div class="issue-found" *ngIf="configInfos.length>0">
-      
+      <p class="processing-header">No syntax errors found</p>
       <table mat-table>
         <thead>
           <tr>
@@ -111,119 +111,29 @@
     </div>
 
 
-    <div *ngIf="requestIssue==true && firstLineNotFromOrArg && !(processingScriptMessage && updateButtonEnabled)">
-      <p class="processing-header">The first line of instruction of Dockerfile should be either <strong>FROM</strong> or <strong>ARG</strong></p>
-      <p>Example:<br/>FROM centos:7<br/>or<br/>ARG VERSION=latest</p>
+    <div class="issue-found" *ngIf="errorResponse.length>0 && requestIssue==true  &&  !(processingScriptMessage && updateButtonEnabled)">
+      
+      <table mat-table>
+        <thead>
+          <tr>
+            <th>Line Number</th>
+            <th>Instruction</th>
+            <th>Description</th>
+            <th>Suggestion</th>
+          </tr>
+        </thead>
+      
+        <tbody>
+          <tr *ngFor="let error of errorResponse">
+            <td>{{ error.lineNumber }}</td>
+            <td>{{ error.command }}</td>
+            <td>{{ error.desc }}</td>
+            <td>{{ error.suggestion }}</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
-    <div *ngIf="requestIssue==true && noFrom && !(processingScriptMessage && updateButtonEnabled)">
-      <p class="processing-header">The instruction of Dockerfile must contain atleast one <strong>FROM</strong></p>
-      <p>Example:<br/>FROM centos:7<br/></p>
-    </div>
-    <div *ngIf="requestIssue==true && invalidFrom && !(processingScriptMessage && updateButtonEnabled)">
-      <p class="processing-header">Error in Line {{lineNumber}}: <strong>FROM</strong> should have an argument </p>
-      <p>Example:<br/>FROM centos:7<br/></p>
-    </div>
-    <div *ngIf="requestIssue==true && invalidLabel && !(processingScriptMessage && updateButtonEnabled)">
-      <p class="processing-header">Error in Line {{lineNumber}}: <strong>LABEL</strong> should have an argument </p>
-      <p>Example:<br/>LABEL version="1.0"<br/></p>
-    </div>
-    <div *ngIf="requestIssue==true && invalidUser && !(processingScriptMessage && updateButtonEnabled)">
-      <p class="processing-header">Error in Line {{lineNumber}}: <strong>USER</strong> should have an argument </p>
-      <p>Example:<br/>USER patrick<br/></p>
-    </div>
-    <div *ngIf="requestIssue==true && invalidMaintainer && !(processingScriptMessage && updateButtonEnabled)">
-      <p class="processing-header">Error in Line {{lineNumber}}: <strong>MAINTAINER</strong> should have an argument </p>
-      <p>Example:<br/>MAINTAINER patrick<br/></p>
-    </div>
-    <div *ngIf="requestIssue==true && invalidStopSignal && !(processingScriptMessage && updateButtonEnabled)">
-      <p class="processing-header">Error in Line {{lineNumber}}: <strong>STOPSIGNAL</strong> should have an argument </p>
-      <p>Example:<br/>STOPSIGNAL signal<br/></p>
-    </div>
-    <div *ngIf="requestIssue==true && invalidExpose && !(processingScriptMessage && updateButtonEnabled)">
-      <p class="processing-header">Error in Line {{lineNumber}}: <strong>EXPOSE</strong> should have an argument </p>
-      <p>Example:<br/>EXPOSE 80/tcp<br/></p>
-    </div>
-    <div *ngIf="requestIssue==true && invalidVolume && !(processingScriptMessage && updateButtonEnabled)">
-      <p class="processing-header">Error in Line {{lineNumber}}: <strong>VOLUME</strong> should have an argument </p>
-      <p>Example:<br/>VOLUME /myvol<br/></p>
-    </div>
-    <div *ngIf="requestIssue==true && invalidExecVolume &&  !(processingScriptMessage && updateButtonEnabled)">
-      <p class="processing-header">Error in Line {{lineNumber}}: <strong>VOLUME</strong> should have properly enclosed argument</p>
-      <p>Example:<br/>VOLUME ["/var/www", "/var/log/apache2", "/etc/apache2"]<br/></p>
-    </div>
-    <div *ngIf="requestIssue==true && invalidEnv && !(processingScriptMessage && updateButtonEnabled)">
-      <p class="processing-header">Error in Line {{lineNumber}}: <strong>ENV</strong> should have an argument </p>
-      <p>Example:<br/>ENV MY_NAME="John Doe"<br/></p>
-    </div>
-    <div *ngIf="requestIssue==true && invalidEnvWithoutEqual && !invalidEnv &&  !(processingScriptMessage && updateButtonEnabled)">
-      <p class="processing-header">Error in Line {{lineNumber}}: <strong>ENV</strong> should have a key-value pair</p>
-      <p>Example:<br/>ENV MY_NAME<strong>=</strong>"John Doe"<br/></p>
-    </div>
-    <div *ngIf="requestIssue==true && invalidArgumentsAdd &&  !(processingScriptMessage && updateButtonEnabled)">
-      <p class="processing-header">Error in Line {{lineNumber}}: <strong>ADD</strong> should have both source and destination</p>
-      <p>Example:<br/>ADD source.file.tar.gz /temp<br/></p>
-    </div>
-    <div *ngIf="requestIssue==true && invalidArgumentsCopy &&  !(processingScriptMessage && updateButtonEnabled)">
-      <p class="processing-header">Error in Line {{lineNumber}}: <strong>COPY</strong> should have both source and destination</p>
-      <p>Example:<br/>COPY /foo /bar<br/></p>
-    </div>
-    <div *ngIf="requestIssue==true && invalidArgumentsArg &&  !(processingScriptMessage && updateButtonEnabled)">
-      <p class="processing-header">Error in Line {{lineNumber}}: <strong>ARG</strong> should have an argument</p>
-      <p>Example:<br/>ARG user1<br/></p>
-    </div>
-    <div *ngIf="requestIssue==true && invalidEntryPoint &&  !(processingScriptMessage && updateButtonEnabled)">
-      <p class="processing-header">Error in Line {{lineNumber}}: <strong>ENTRYPOINT</strong> should have atleast two arguments</p>
-      <p>Example:<br/>ENTRYPOINT top -b<br/></p>
-    </div>
-    <div *ngIf="requestIssue==true && invalidExecEntryPoint &&  !(processingScriptMessage && updateButtonEnabled)">
-      <p class="processing-header">Error in Line {{lineNumber}}: <strong>ENTRYPOINT</strong> should have properly enclosed argument</p>
-      <p>Example:<br/>ENTRYPOINT ["top", "-b"]<br/></p>
-    </div>
-    <div *ngIf="requestIssue==true && invalidArgumentShell &&  !(processingScriptMessage && updateButtonEnabled)">
-      <p class="processing-header">Error in Line {{lineNumber}}: <strong>SHELL</strong> should have properly enclosed argument</p>
-      <p>Example:<br/>SHELL ["powershell","-command"]<br/></p>
-    </div>
-    <div *ngIf="requestIssue==true && invalidExecShell &&  !(processingScriptMessage && updateButtonEnabled)">
-      <p class="processing-header">Error in Line {{lineNumber}}: <strong>SHELL</strong> should have properly enclosed argument</p>
-      <p>Example:<br/>SHELL ["powershell","-command"]<br/></p>
-    </div>
-    <div *ngIf="requestIssue==true && invalidArgumentsHealthCheck &&  !(processingScriptMessage && updateButtonEnabled)">
-      <p class="processing-header">Error in Line {{lineNumber}}: <strong>HEALTHCHECK</strong> should have atleast one argument</p>
-      <p>Example:<br/>HEALTHCHECK --interval=5m --timeout=3s \
-        CMD curl -f http://localhost/ || exit 1<br/></p>
-    </div>
-    <div *ngIf="requestIssue==true && invalidArgumentsRun &&  !(processingScriptMessage && updateButtonEnabled)">
-      <p class="processing-header">Error in Line {{lineNumber}}: <strong>RUN</strong> should have atleast one arguments</p>
-      <p>Example:<br/>RUN yum -y update<br/></p>
-    </div>
-    <div *ngIf="requestIssue==true && invalidExecRun &&  !(processingScriptMessage && updateButtonEnabled)">
-      <p class="processing-header">Error in Line {{lineNumber}}: <strong>RUN</strong> should have properly enclosed argument</p>
-      <p>Example:<br/>RUN ["/bin/bash", "-c", "echo hello"]<br/></p>
-    </div>
-    <div *ngIf="requestIssue==true && noInteractiveModeRun && !(processingScriptMessage && updateButtonEnabled)">
-      <p class="processing-header">Error in Line {{lineNumber}}: <strong>RUN</strong> - Please enter the instructions in non interactive mode.</p>
-      <p>Example:<br/>RUN yum <strong>-y</strong> install httpd<br/></p>
-    </div>
-    <div *ngIf="requestIssue==true && invalidArgumentsCmd &&  !(processingScriptMessage && updateButtonEnabled)">
-      <p class="processing-header">Error in Line {{lineNumber}}: <strong>CMD</strong> should have atleast two arguments</p>
-      <p>Example:<br/>CMD echo "hello"<br/></p>
-    </div>
-    <div *ngIf="requestIssue==true && invalidExecCmd &&  !(processingScriptMessage && updateButtonEnabled)">
-      <p class="processing-header">Error in Line {{lineNumber}}: <strong>CMD</strong> should have properly enclosed argument</p>
-      <p>Example:<br/>CMD ["echo", "Welcome to Thinknyx"]<br/></p>
-    </div>
-    <div *ngIf="requestIssue==true && invalidWorkDir &&  !(processingScriptMessage && updateButtonEnabled)">
-      <p class="processing-header">Error in Line {{lineNumber}}: <strong>WORKDIR</strong> should have an argument</p>
-      <p>Example:<br/>WORKDIR /a<br/></p>
-    </div>
-    <div *ngIf="requestIssue==true && invalidOnBuild &&  !(processingScriptMessage && updateButtonEnabled)">
-      <p class="processing-header">Error in Line {{lineNumber}}: <strong>ONBUILD</strong> should have atleast two arguments</p>
-      <p>Example:<br/>ONBUILD ADD . /app/src<br/></p>
-    </div>
-    <div *ngIf="requestIssue==true && invalidInstruction &&  !(processingScriptMessage && updateButtonEnabled)">
-      <p class="processing-header">Error in Line {{lineNumber}}: Not a valid instruction</p>
-      <p><strong>Valid instructions:</strong><br/>FROM,LABEL,USER,MAINTAINER,STOPSIGNAL,<br/>EXPOSE,ENV,ADD,COPY,<br/>ARG,RUN,CMD,ENTRYPOINT,ONBUILD,<br/>HEALTHCHECK,SHELL,VOLUME<br/></p>
-    </div>
+
    
 
   </mat-card>

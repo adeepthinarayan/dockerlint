@@ -10,26 +10,14 @@ const folderName = "./users/";
 let reqBody, reqBodyContent, reqBodyEmail, fname = "";
 let requestValidationPassed = false;
 let requestValidationFailed = false;
-let errorResponse = "";
+let command = "";
+
 let lineCount = 0;
-let count = 0;
 
-let firstLineNotFromOrArg = false;
-let noFrom = false;
-let invalidFrom = false;
-let invalidLabel = false;
-let invalidUser = false;
-let invalidMaintainer = false;
-let invalidStopSignal = false;
-let invalidExpose = false;
-let invalidVolume = false;
-let invalidEnv = false;
-let invalidEnvWithoutEqual = false;
-let invalidArgumentsAdd = false;
-let invalidArgumentsCopy = false;
-let invalidArgumentsArg = false;
 
-let invalidInstruction = false;
+let response = [];
+let finalResponse = [];
+let lastLine = "";
 
 // Setting headers
 app.use((req, res, next) => {
@@ -126,187 +114,208 @@ function storeData() {
       console.log(`${fname} is created!`);
     });
 
-    function setFailureStatus() {
+    function setFailureStatus(linenum, cmd, description, suggestion) {
+
       requestValidationFailed = true;
       count = lineCount;
+      response = {
+        lineNumber: linenum,
+        command: cmd,
+        desc: description,
+        suggestion: suggestion
+      }
+      finalResponse.push(response);
+
+      //console.log(finalResponse);
+    }
+
+    function sendResponse() {
       res.status(200).json({
-        responseList: errorResponse,
-        lineNumber: count
+        responseList: finalResponse,
       })
     }
 
     const allFileContents = fs.readFileSync(fname + "/Dockerfile", 'utf-8');
+
+
     lineCount = 0;
-    count = 0;
-    if (allFileContents.includes("FROM")) {
-
-      if (allFileContents.split(' ')[0] === "FROM" || allFileContents.split(' ')[0] === "ARG") {
-
-        allFileContents.split(/\r?\n/).forEach(line => {
-
-          let words = line.split(' ');
-          lineCount++;
-
-          if (words[0] === "FROM" || words[0] === "LABEL" || words[0] === "USER" || words[0] === "MAINTAINER" || words[0] === "STOPSIGNAL" || words[0] === "EXPOSE" || words[0] === "ENV" || words[0] === "ADD" || words[0] === "COPY" || words[0] === "ARG" || words[0] === "RUN" || words[0] === "CMD" || words[0] === "ENTRYPOINT" || words[0] === "ONBUILD" || words[0] === "HEALTHCHECK" || words[0] === "SHELL" || words[0] === "VOLUME" || words[0] === "WORKDIR") {
+    let count = 0;
+    finalResponse = [];
+    let i = 0;
 
 
-            if (words[0] === "FROM")
-              words[1] ? requestValidationPassed = true : (errorResponse = 3, setFailureStatus())
-
-            else if (words[0] === "LABEL")
-              words[1] ? requestValidationPassed = true : (errorResponse = 4, setFailureStatus())
-
-            else if (words[0] === "USER")
-              words[1] ? requestValidationPassed = true : (errorResponse = 5, setFailureStatus())
-
-            else if (words[0] === "MAINTAINER")
-              words[1] ? requestValidationPassed = true : (errorResponse = 6, setFailureStatus())
-
-            else if (words[0] === "STOPSIGNAL")
-              words[1] ? requestValidationPassed = true : (errorResponse = 7, setFailureStatus())
-
-            else if (words[0] === "EXPOSE")
-              words[1] ? requestValidationPassed = true : (errorResponse = 8, setFailureStatus())
-
-            else if (words[0] === "VOLUME") {
-              if (words[1]) {
-                if (line.includes("[") || line.includes("]")) {
-                  validateExecForm(line) ? requestValidationPassed = true : (errorResponse = 16, setFailureStatus())
-                }
-                else
-                  requestValidationPassed = true;
-              }
-              else {
-                errorResponse = 9;
-                setFailureStatus();
-              }
-            }
-
-            else if (words[0] === "ENV") {
-              if (words[1]) {
-                if (words[1].includes("="))
-                  requestValidationPassed = true;
-                else {
-                  errorResponse = 11;
-                  setFailureStatus();
-                }
-              }
-              else {
-                errorResponse = 10;
-                setFailureStatus();
-              }
-            }
-
-            else if (words[0] === "ADD")
-              (words[1] && words[2]) ? requestValidationPassed = true : (errorResponse = 12, setFailureStatus())
+    while (i >= 0) {
+      if (!allFileContents.includes("FROM")) {
+        break;
+      }
+      if (allFileContents.split(/\r?\n/)[i].split(' ')[0] === "FROM" || allFileContents.split(/\r?\n/)[i].split(' ')[0] === "ARG") {
+        break;
+      }
+      i++;
+    }
 
 
-            else if (words[0] === "COPY")
-              (words[1] && words[2]) ? requestValidationPassed = true : (errorResponse = 13, setFailureStatus())
+    if (allFileContents.split(/\r?\n/)[i].split(' ')[0] === "FROM" || allFileContents.split(/\r?\n/)[i].split(' ')[0] === "ARG") {
+      if (!allFileContents.includes("FROM"))
+        setFailureStatus(1, "There should be atleast one FROM", "FROM centos:7")
+    }
+    else
+      setFailureStatus(1, "First line of instruction should be either FROM or ARG", "FROM centos:7 OR ARG user1")
 
-            else if (words[0] === "ARG")
-              words[1] ? requestValidationPassed = true : (errorResponse = 14, setFailureStatus())
+    allFileContents.split(/\r?\n/).forEach(line => {
 
-            else if (words[0] === "ENTRYPOINT") {
-              if (words[1] && words[2]) {
-                if (line.includes("[") || line.includes("]")) {
-                  validateExecForm(line) ? requestValidationPassed = true : (errorResponse = 18, setFailureStatus())
-                }
-                else
-                  requestValidationPassed = true;
-              }
-              else {
-                errorResponse = 17;
-                setFailureStatus();
-              }
-            }
+      let words = line.split(' ');
+      lineCount++;
 
-            else if (words[0] === "SHELL") {
-              if (words[1]) {
-                if (line.includes("[") || line.includes("]")) {
-                  validateExecForm(line) ? requestValidationPassed = true : (errorResponse = 20, setFailureStatus())
-                }
-                else
-                  requestValidationPassed = true;
-              }
-              else {
-                errorResponse = 19;
-                setFailureStatus();
-              }
-            }
-
-            else if (words[0] === "HEALTHCHECK")
-              words[1] ? requestValidationPassed = true : (errorResponse = 21, setFailureStatus())
-
-            else if (words[0] === "RUN") {
-              if (words[1]) {
-                if (line.includes("[") || line.includes("]")) {
-                  validateExecForm(line) ? requestValidationPassed = true : (errorResponse = 23, setFailureStatus())
-                }
-                else if (line.includes("install")) {
-                  if (line.includes("-y")) {
-                    requestValidationPassed = true;
-                  }
-                  else {
-                    validateExecForm(line) ? requestValidationPassed = true : (errorResponse = 24, setFailureStatus())
-                  }
-                }
-                else
-                  requestValidationPassed = true;
-              }
-              else {
-                errorResponse = 22;
-                setFailureStatus();
-              }
-            }
-
-            else if (words[0] === "CMD") {
-              if (words[1] && words[2]) {
-                if (line.includes("[") || line.includes("]")) {
-                  validateExecForm(line) ? requestValidationPassed = true : (errorResponse = 26, setFailureStatus())
-                }
-                else
-                  requestValidationPassed = true;
-              }
-              else {
-                errorResponse = 25;
-                setFailureStatus();
-              }
-            }
-
-            else if (words[0] === "WORKDIR")
-              words[1] ? requestValidationPassed = true : (errorResponse = 27, setFailureStatus())
-
-            else if (words[0] === "ONBUILD")
-              (words[1] && words[2]) ? requestValidationPassed = true : (errorResponse = 28, setFailureStatus())
-
-            else {
-              requestValidationFailed = true;
-              res.status(200).json({
-                responseList: "The Dockerfile is having issues, kindly check and rectify Dockerfile Instructions and associated Arguments."
-              })
-
-              return false;
-            }
-          }
-
-          else {
-            errorResponse = 15;
-            setFailureStatus();
-          }
-
-        });
+      if (words[0] == "#" || line.startsWith("\t") || line.startsWith("\t\\") || line.startsWith("\t&&") || line.trim() === '' || line.indexOf(' ') == 0 || words[0] === "FROM" || words[0] === "LABEL" || words[0] === "USER" || words[0] === "MAINTAINER" || words[0] === "STOPSIGNAL" || words[0] === "EXPOSE" || words[0] === "ENV" || words[0] === "ADD" || words[0] === "COPY" || words[0] === "ARG" || words[0] === "RUN" || words[0] === "CMD" || words[0] === "ENTRYPOINT" || words[0] === "ONBUILD" || words[0] === "HEALTHCHECK" || words[0] === "SHELL" || words[0] === "VOLUME" || words[0] === "WORKDIR") { }
+      else {
+        setFailureStatus(lineCount, "Not a valid instruction", "FROM,LABEL,USER,MAINTAINER,\nSTOPSIGNAL,EXPOSE,ENV,ADD,\nCOPY,ARG,RUN,CMD,ENTRYPOINT,\nONBUILD,HEALTHCHECK,SHELL,VOLUME");
       }
 
+      if (words[0] === "FROM")
+        words[1] ? requestValidationPassed = true : setFailureStatus(lineCount, "FROM", "FROM should have an argument", "FROM centos:7")
+
+      if (words[0] === "LABEL")
+        words[1] ? requestValidationPassed = true : setFailureStatus(lineCount, "LABEL", "LABEL should have an argument", 'LABEL version="1.0"')
+
+      if (words[0] === "USER")
+        words[1] ? requestValidationPassed = true : setFailureStatus(lineCount, "USER", "USER should have an argument", "USER patrick")
+
+      if (words[0] === "MAINTAINER")
+        words[1] ? requestValidationPassed = true : setFailureStatus(lineCount, "MAINTAINER", "MAINTAINER should have an argument", "MAINTAINER patrick")
+
+      if (words[0] === "STOPSIGNAL")
+        words[1] ? requestValidationPassed = true : setFailureStatus(lineCount, "STOPSIGNAL", "STOPSIGNAL should have an argument", "STOPSIGNAL signal")
+
+      if (words[0] === "EXPOSE")
+        words[1] ? requestValidationPassed = true : setFailureStatus(lineCount, "EXPOSE", "EXPOSE should have an argument", "EXPOSE 80/tcp")
+
+      if (words[0] === "VOLUME") {
+        if (words[1]) {
+          if (line.includes("[") || line.includes("]")) {
+            validateExecForm(line) ? requestValidationPassed = true : setFailureStatus(lineCount, "VOLUME", "VOLUME should have properly enclosed argument", 'VOLUME ["/var/www", "/var/log/apache2", "/etc/apache2"]')
+          }
+          else
+            requestValidationPassed = true;
+        }
+        else {
+          setFailureStatus(lineCount, "VOLUME", "VOLUME should have an argument", "VOLUME /myvol");
+        }
+      }
+
+      if (words[0] === "ENV") {
+        if (words[1] && words[2]) { requestValidationPassed = true; }
+        else if (words[1]) {
+          if (words[1].includes("="))
+            requestValidationPassed = true;
+          else {
+            setFailureStatus(lineCount, "ENV", "Provide '=' in case of one argument (OR) provide two arguments", 'ENV MY_NAME="John Doe" \n (OR) ENV GOSU_VERSION 1.14');
+          }
+        }
+        else {
+          setFailureStatus(lineCount, "ENV", "ENV should have an argument", 'ENV MY_NAME="John Doe" \n (OR) ENV GOSU_VERSION 1.14');
+        }
+
+
+      }
+
+      if (words[0] === "ADD")
+        (words[1] && words[2]) ? requestValidationPassed = true : setFailureStatus(lineCount, "ADD", "ADD should have both source and destination", 'ADD source.file.tar.gz /temp')
+
+
+      if (words[0] === "COPY")
+        (words[1] && words[2]) ? requestValidationPassed = true : setFailureStatus(lineCount, "COPY", "COPY should have both source and destination", 'COPY /foo /bar')
+
+      if (words[0] === "ARG") {
+        if (words[1] && words[2]) { requestValidationPassed = true; }
+        else if (words[1]) {
+          if (words[1].includes("="))
+            requestValidationPassed = true;
+          else
+            setFailureStatus(lineCount, "ARG", "1 warning-syntax doesn't contain any value", 'ARG CMD=Thinknyx');
+        }
+        else
+          setFailureStatus(lineCount, "ARG", "ARG should have atleast one argument", 'ARG CMD=Thinknyx')
+      }
+
+      if (words[0] === "ENTRYPOINT") {
+        if (words[1]) {
+          if (line.includes("[") || line.includes("]")) {
+            validateExecForm(line) ? requestValidationPassed = true : setFailureStatus(lineCount, "ENTRYPOINT", "ENTRYPOINT should have properly enclosed argument", 'ENTRYPOINT ["top", "-b"]')
+          }
+          else
+            requestValidationPassed = true;
+        }
+        else {
+          setFailureStatus(lineCount, "ENTRYPOINT", "ENTRYPOINT should have atleast one argument", 'ENTRYPOINT top -b');
+        }
+      }
+
+      if (words[0] === "SHELL") {
+        if (words[1]) {
+          if (line.includes("[") || line.includes("]")) {
+            validateExecForm(line) ? requestValidationPassed = true : setFailureStatus(lineCount, "SHELL", "SHELL should have properly enclosed argument", 'SHELL ["powershell","-command"]')
+          }
+          else
+            requestValidationPassed = true;
+        }
+        else {
+          setFailureStatus(lineCount, "SHELL", "SHELL should have an argument", 'SHELL ["powershell","-command"]');
+        }
+      }
+
+      if (words[0] === "HEALTHCHECK")
+        words[1] ? requestValidationPassed = true : setFailureStatus(lineCount, "HEALTHCHECK", "HEALTHCHECK should have atleast one argument", 'HEALTHCHECK --interval=5m --timeout=3s \
+              CMD curl -f http://localhost/ || exit 1')
+
+      if (words[0] === "RUN") {
+        if (words[1]) {
+          if (line.includes("[") || line.includes("]")) {
+            validateExecForm(line) ? requestValidationPassed = true : setFailureStatus(lineCount, "RUN", "RUN should have properly enclosed argument", 'RUN ["/bin/bash", "-c", "echo hello"]')
+          }
+          else if (line.includes("install")) {
+            if (line.includes("-y")) {
+              requestValidationPassed = true;
+            }
+            else {
+              validateExecForm(line) ? requestValidationPassed = true : setFailureStatus(lineCount, "RUN", "Please enter the RUN install instruction in non-interactive mode", "RUN yum -y install httpd")
+            }
+          }
+          else
+            requestValidationPassed = true;
+        }
+        else {
+          setFailureStatus(lineCount, "RUN", "RUN should have atleast one arguments", 'RUN yum -y update');
+        }
+      }
+
+      if (words[0] === "CMD") {
+        if (words[1]) {
+          if (line.includes("[") || line.includes("]")) {
+            validateExecForm(line) ? requestValidationPassed = true : setFailureStatus(lineCount, "CMD", "CMD should have properly enclosed argument", 'CMD ["echo", "Welcome to Thinknyx"]')
+          }
+          else
+            requestValidationPassed = true;
+        }
+        else {
+          setFailureStatus(lineCount, "CMD", "CMD should have atleast one argument", 'CMD echo "hello"');
+        }
+      }
+
+      if (words[0] === "WORKDIR")
+        words[1] ? requestValidationPassed = true : setFailureStatus(lineCount, "WORKDIR", "WORKDIR should have an argument", 'WORKDIR /a')
+
+      if (words[0] === "ONBUILD")
+        (words[1] && words[2]) ? requestValidationPassed = true : setFailureStatus(lineCount, "ONBUILD", 'ONBUILD should have atleast two arguments', 'ONBUILD ADD . /app/src')
+
+      lastLine = line;
+
     }
-    else {
-      requestValidationFailed = true;
-      errorResponse = 2;
-      res.status(200).json({
-        responseList: errorResponse,
-        lineNumber: count
-      })
-    }
+
+    );
+
+    if (requestValidationFailed === true)
+      sendResponse();
     //Respond back with success.
 
     if (requestValidationPassed == true && requestValidationFailed == false) {
@@ -348,8 +357,7 @@ function storeData() {
     else {
       requestValidationFailed = false;
       res.status(200).json({
-        responseList: errorResponse,
-        lineNumber: count
+        responseList: finalResponse,
       })
     }
   });

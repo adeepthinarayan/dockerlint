@@ -9,7 +9,7 @@ mat-card {
   align-items: center;
   justify-content: center;
   text-align: center;
-  width: 35%;
+  width: 47%;
   color: #fff;
 }
 
@@ -24,6 +24,7 @@ mat-card-header {
 table {
   background-color: #349cfb;
   color: #0a1f32;
+  text-align: center;
 }
 th,
 td {
@@ -62,13 +63,17 @@ main {
 
 /* Input */
 
+input{
+  height:2.5rem;
+}
+
 .form-label{
   font-size:1.1rem;
   color:#0a1f32; 
 }
 
 .form-control{
-  font-size: 1rem;
+  font-size: 1.05rem;
   font-family:Arial, Helvetica, sans-serif
 }
 

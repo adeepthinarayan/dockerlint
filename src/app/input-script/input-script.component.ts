@@ -38,42 +38,12 @@ export class InputScriptComponent {
 
   //Flag for 500 error
   errorStatus:number;
-
+  errorResponse:any="";
 
   requestIssue=false;
 
   errorNumber=0;
   lineNumber=0;
-
-  firstLineNotFromOrArg=false;
-  noFrom=false;
-  invalidFrom=false;
-  invalidLabel=false;
-  invalidUser=false;
-  invalidMaintainer=false;
-  invalidStopSignal=false;
-  invalidExpose=false;
-  invalidVolume=false;
-  invalidEnv=false;
-  invalidEnvWithoutEqual=false;
-  invalidArgumentsAdd=false;
-  invalidArgumentsCopy=false;
-  invalidArgumentsArg=false;
-  invalidExecVolume=false;
-  invalidEntryPoint=false;
-  invalidExecEntryPoint=false;
-  invalidArgumentShell=false;
-  invalidExecShell=false;
-  invalidArgumentsHealthCheck=false;
-  invalidArgumentsRun=false;
-  invalidExecRun=false;
-  noInteractiveModeRun=false;
-  invalidArgumentsCmd=false;
-  invalidExecCmd=false;
-  invalidWorkDir=false;
-  invalidOnBuild=false;
-
-  invalidInstruction=false;
 
   constructor(private http: HttpClient) {}
 
@@ -136,7 +106,10 @@ export class InputScriptComponent {
   // This function first calls storedata. Waits until the response is retreived and then invoke getIssueLists function.
   async mainFunction(inputJSON:any, httpOptions:any) {
    await this.storeData(inputJSON, httpOptions); 
-   this.getIssueLists();
+   setTimeout(() => {
+    this.getIssueLists();
+   }, 20);
+  
   }
 
   
@@ -190,42 +163,16 @@ export class InputScriptComponent {
         }
     
 
-        else if(responseList>0){
+        else if(responseList[0]['lineNumber']){        
           this.requestIssue=true;
           this.Misconfigurations=1;
 
-
-          if(responseList===1) this.firstLineNotFromOrArg=true;
-          if(responseList===2) this.noFrom=true;
-          if(responseList===3) this.invalidFrom=true;
-          if(responseList===4) this.invalidLabel=true;
-          if(responseList===5) this.invalidUser=true;
-          if(responseList===6) this.invalidMaintainer=true;
-          if(responseList===7) this.invalidStopSignal=true;
-          if(responseList===8) this.invalidExpose=true;
-          if(responseList===9) this.invalidVolume=true;
-          if(responseList===10) this.invalidEnv=true;
-          if(responseList===11) this.invalidEnvWithoutEqual=true;
-          if(responseList===12) this.invalidArgumentsAdd=true;
-          if(responseList===13) this.invalidArgumentsCopy=true;
-          if(responseList===14) this.invalidArgumentsArg=true;
-          if(responseList===15) this.invalidInstruction=true;
-          if(responseList===16) this.invalidExecVolume=true;
-          if(responseList===17) this.invalidEntryPoint=true;
-          if(responseList===18) this.invalidExecEntryPoint=true;
-          if(responseList===19) this.invalidArgumentShell=true;
-          if(responseList===20) this.invalidExecShell=true;
-          if(responseList===21) this.invalidArgumentsHealthCheck=true;
-          if(responseList===22) this.invalidArgumentsRun=true;
-          if(responseList===23) this.invalidExecRun=true;
-          if(responseList===24) this.noInteractiveModeRun=true;
-          if(responseList===25) this.invalidArgumentsCmd=true;
-          if(responseList===26) this.invalidExecCmd=true;
-          if(responseList===27) this.invalidWorkDir=true;
-          if(responseList===28) this.invalidOnBuild=true;
+          this.errorResponse=JSON.parse(
+            JSON.stringify(responseList)
+          ); 
+          console.log(this.errorResponse)
         }
-
-        
+      
         else if(this.result_json['responseList']==="The Dockerfile is having issues, kindly check and rectify Dockerfile Instructions and associated Arguments."){
           this.requestIssue=true;
           this.Misconfigurations=1;
