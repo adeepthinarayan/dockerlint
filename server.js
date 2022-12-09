@@ -1,5 +1,5 @@
 //For starting and listening the server
-import app from "./backend/createFolderAndStoreScript.js";
+import app from "./createFolderAndStoreScript.js";
 
 app.listen(3000, () => {
   console.log("Started server on 3000");

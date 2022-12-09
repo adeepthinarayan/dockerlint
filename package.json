@@ -1,52 +1,25 @@
 {
-  "name": "docker-lint",
-  "version": "0.0.0",
-  "type": "module",
-  "scripts": {
-    "ng": "ng",
-    "start": "node server.js",
-    "build": "ng build",
-    "watch": "ng build --watch --configuration development",
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "private": true,
-  "dependencies": {
-    "@angular/animations": "^14.0.0",
-    "@angular/cdk": "^14.2.0",
-    "@angular/common": "^14.0.0",
-    "@angular/compiler": "^14.0.0",
-    "@angular/core": "^14.0.0",
-    "@angular/forms": "^14.0.0",
-    "@angular/material": "^14.2.0",
-    "@angular/platform-browser": "^14.0.0",
-    "@angular/platform-browser-dynamic": "^14.0.0",
-    "@angular/router": "^14.0.0",
-    "axios": "^1.1.2",
-    "body-parser": "^1.20.0",
-    "bootstrap": "^5.2.2",
-    "child_process": "^1.0.2",
-    "express": "^4.18.1",
-    "first-line": "^2.0.2",
-    "jquery": "^3.6.1",
-    "node-localstorage": "^2.2.1",
-    "read-last-lines": "^1.8.0",
-    "rxjs": "~7.5.0",
-    "shelljs": "^0.8.5",
-    "tslib": "^2.3.0",
-    "zone.js": "~0.11.4"
-  },
-  "devDependencies": {
-    "@angular-devkit/build-angular": "^14.2.1",
-    "@angular/cli": "~14.2.1",
-    "@angular/compiler-cli": "^14.0.0",
-    "@types/jasmine": "~4.0.0",
-    "jasmine-core": "~4.3.0",
-    "karma": "~6.4.0",
-    "karma-chrome-launcher": "~3.1.0",
-    "karma-coverage": "~2.2.0",
-    "karma-jasmine": "~5.1.0",
-    "karma-jasmine-html-reporter": "~2.0.0",
-    "nodemon": "^2.0.19",
-    "typescript": "~4.7.2"
+    "name": "docker-lint",
+    "version": "1.0.0",
+    "type": "module",
+    "scripts": {
+      "start": "node server.js",
+      "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "private": true,
+    "dependencies": {
+      "body-parser": "^1.20.0",
+      "child_process": "^1.0.2",
+      "express": "^4.18.1",
+      "node-localstorage": "^2.2.1",
+      "rxjs": "~7.5.0",
+      "shelljs": "^0.8.5",
+      "tslib": "^2.3.0",
+      "zone.js": "~0.11.4"
+    },
+    "devDependencies": {
+      "nodemon": "^2.0.19",
+      "typescript": "~4.7.2"
+    }
   }
-}
+  

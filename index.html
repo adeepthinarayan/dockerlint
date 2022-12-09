@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dockerlint</title>
+    <link href="style.css" rel="stylesheet" />
+    <script type="application/javascript" src="ValidateRequest.js"></script>
+  </head>
+  <body>
+    <div class="container">
+      <div class="brand-logo"></div>
+      <div class="brand-title">DOCKERLINT</div>
+      <div class="inputs">
+        <label>EMAIL</label>
+        <input type="email" placeholder="example@test.com" />
+        <label>CONTENT</label>
+        <textarea
+          rows="20"
+          cols="50"
+          name="comment"
+          required
+          id="dockercontent"
+        >
+        </textarea>
+        <button type="submit" onclick="validateDockerfile()">Submit</button>
+      </div>
+    </div>
+  </body>
+</html>
