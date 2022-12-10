@@ -78,10 +78,12 @@
           <div>
           <label for="email">Enter your email ID:</label>
           <input id="email" placeholder="example@mail.com" type="email" required/>
+          <label for="email" id="email-validation"></label>
         </div>
         <div>
           <label for="dockercontent">Enter the Dockerfile content:</label>
-          <textarea required type="text" class="form-control" id="dockercontent" rows="8"></textarea>          
+          <textarea  type="text" class="form-control" id="dockercontent" rows="8" required></textarea>          
+          <label for="dockercontent" id="content-validation"></label>
         </div>
         <button type="button" onclick="validateDockerfile()" id="button" class="btn-get-started scrollto">SUBMIT</button>
       </form>
@@ -89,7 +91,7 @@
         </div>
         <div id="validation-results">
           <h2>VALIDATION RESULTS</h2>
-          <table class="table">
+          <table class="table" id="table-validate">
             <thead>
               <tr>
                 <th>Line Number</th>
@@ -104,9 +106,9 @@
         </div>
 
         <div id="trivy-results">
-          <h2>VALIDATION RESULTS</h2>
-          <h6>No validation errors</h6>
-          <table class="table">
+          <h2>TRIVY RESULTS</h2>
+          <h6 id="trivy-results-status">No errors found!!</h6>
+          <table class="table" id="table-trivy-validation">
             <thead>
               <tr>
                 <th>Type</th>
