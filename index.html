@@ -80,15 +80,19 @@
           <input id="email" placeholder="example@mail.com" type="email" required/>
           <label for="email" id="email-validation"></label>
         </div>
-        <div>
+        <div >
           <label for="dockercontent">Enter the Dockerfile content:</label>
-          <textarea  type="text" class="form-control" id="dockercontent" rows="8" required></textarea>          
+          <div class='custom-textarea'>      
+          <textarea  type="text" class="form-control textarea" id="dockercontent" rows="8" required></textarea>          
+          <div class='linenumbers'></div>
+        </div> 
           <label for="dockercontent" id="content-validation"></label>
         </div>
-        <button type="button" onclick="validateDockerfile()" id="button" class="btn-get-started scrollto">SUBMIT</button>
-      </form>
+        <button type="button" onclick="validateDockerfile();document.getElementById('results').scrollIntoView();" id="button" class="btn-get-started scrollto">SUBMIT</button>
 
+      </form>
         </div>
+        <div id="results">
         <div id="validation-results">
           <h2>VALIDATION RESULTS</h2>
           <table class="table" id="table-validate">
@@ -107,6 +111,7 @@
 
         <div id="trivy-results">
           <h2>TRIVY RESULTS</h2>
+          <h6 id="trivy-results-noValidationError">No validation errors!!</h6>
           <h6 id="trivy-results-status">No errors found!!</h6>
           <table class="table" id="table-trivy-validation">
             <thead>
@@ -121,6 +126,7 @@
             <tbody class="trivy-body"></tbody>
           </table>
         </div> 
+      </div>
       </body>
       
         
@@ -257,6 +263,7 @@
   <!-- Template Main JS File -->
   <script src="assets/js/main.js"></script>
   <script  src="assets/js/ValidateRequest.js"></script>
+  <script  src="assets/js/CustomTextArea.js"></script>
 </body>
 
 </html>

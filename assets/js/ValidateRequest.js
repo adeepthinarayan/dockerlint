@@ -73,8 +73,10 @@ function displayTrivyResults(data) {
     }
     if (Misconfigurations == '')
         document.getElementById("trivy-results-status").style.display = "flex";
-    else
+    else {
         document.getElementById("trivy-results-status").style.display = "none";
+        document.getElementById("trivy-results-noValidationError").style.display = "flex";
+    }
 
 
     for (var i = 0, len = Misconfigurations.length; i < len; i++) {
@@ -540,6 +542,7 @@ function validateEmailAndContent() {
 }
 
 function validateDockerfile() {
+
 
     $('#table-validate tr').remove();
     $('#table-trivy-validation tr').remove();

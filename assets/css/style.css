@@ -20,9 +20,6 @@ button {
   width: 50%;
 }
 
-textarea {
-  width: 100%;
-}
 label {
   color: #fff;
 }
@@ -1794,4 +1791,102 @@ section {
 
 #trivy-results-status {
   display: none;
+}
+
+#trivy-results-noValidationError {
+  display: none;
+}
+@import url("https://fonts.googleapis.com/css?family=Ubuntu+Mono");
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+::-moz-selection {
+  background: #222725;
+  color: #ffffff;
+}
+
+::selection {
+  background: #222725;
+  color: #ffffff;
+}
+
+body {
+  overflow-x: hidden;
+  background: #e4e6c3;
+}
+
+.custom-textarea {
+  position: relative;
+  box-shadow: 0 0 16px rgba(34, 39, 37, 0.3);
+  overflow: hidden;
+}
+.custom-textarea ::after {
+  content: "";
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 42px;
+  width: 16px;
+  height: 100%;
+  background: #ffffff;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.custom-textarea > .textarea {
+  display: block;
+  position: relative;
+  z-index: 1;
+  width: calc(100% - 58px);
+  height: 150px;
+  min-height: 150px;
+  max-height: 90vh;
+  margin-left: 58px;
+  font-size: 16px;
+  line-height: 24px;
+  font-family: "Ubuntu Mono", monospace;
+  outline: none;
+  border: none;
+  border-radius: 0 5px 5px 0;
+  resize: vertical;
+  white-space: pre;
+  overflow: auto;
+  word-wrap: normal;
+  color: #121113;
+  background: #ffffff;
+}
+
+.custom-textarea > .textarea::-webkit-scrollbar-track {
+  border-radius: 0;
+  background-color: #fff;
+}
+
+.custom-textarea > .textarea::-webkit-scrollbar {
+  width: 12px;
+  background-color: #ffffff;
+}
+
+.custom-textarea > .textarea::-webkit-scrollbar-thumb {
+  border-radius: 0;
+  background-color: #149f6e;
+}
+
+.custom-textarea > .linenumbers {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 42px;
+  background: #149f6e;
+}
+
+.custom-textarea > .linenumbers > .number {
+  font-family: "Ubuntu Mono", monospace;
+  font-size: 16px;
+  line-height: 24px;
+  padding-left: 10px;
+  color: #fff;
 }
