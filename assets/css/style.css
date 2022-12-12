@@ -8,6 +8,7 @@
 /*--------------------------------------------------------------
 # General
 --------------------------------------------------------------*/
+@import url("https://fonts.googleapis.com/css?family=Ubuntu+Mono");
 body {
   font-family: "Open Sans", sans-serif;
   color: #444444;
@@ -27,12 +28,14 @@ input {
   width: 100%;
 }
 table {
-  color: #fff;
+  background-color: white;
   text-align: center;
 }
-thead,
+thead {
+  color: #1acc8d;
+}
 tbody {
-  color: #fff;
+  color: #000;
 }
 a {
   color: #1acc8d;
@@ -1699,39 +1702,6 @@ section {
   color: #4be8b0;
 }
 
-#footer .footer-top .footer-newsletter form {
-  margin-top: 30px;
-  background: #fff;
-  padding: 6px 10px 6px 15px;
-  position: relative;
-  border-radius: 50px;
-}
-
-#footer .footer-top .footer-newsletter form input[type="email"] {
-  border: 0;
-  padding: 4px;
-  width: calc(100% - 110px);
-}
-
-#footer .footer-top .footer-newsletter form input[type="submit"] {
-  position: absolute;
-  top: 0;
-  right: -2px;
-  bottom: 0;
-  border: 0;
-  background: none;
-  font-size: 16px;
-  padding: 0 20px;
-  background: #1acc8d;
-  color: #fff;
-  transition: 0.3s;
-  border-radius: 50px;
-}
-
-#footer .footer-top .footer-newsletter form input[type="submit"]:hover {
-  background: #149f6e;
-}
-
 #footer .copyright {
   border-top: 1px solid #010479;
   text-align: center;
@@ -1796,8 +1766,7 @@ section {
 #trivy-results-noValidationError {
   display: none;
 }
-@import url("https://fonts.googleapis.com/css?family=Ubuntu+Mono");
-
+/* For textarea line numbers */
 * {
   margin: 0;
   padding: 0;
@@ -1889,4 +1858,13 @@ body {
   line-height: 24px;
   padding-left: 10px;
   color: #fff;
+}
+.footer-row {
+  display: flex;
+  gap: 170px;
+}
+.heading {
+  background-color: #000;
+  color: #fff;
+  padding: 5px;
 }

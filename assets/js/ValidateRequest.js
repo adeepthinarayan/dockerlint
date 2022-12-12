@@ -544,8 +544,8 @@ function validateEmailAndContent() {
 function validateDockerfile() {
 
 
-    $('#table-validate tr').remove();
-    $('#table-trivy-validation tr').remove();
+    $('#validation-body tr').remove();
+    $('#trivy-body tr').remove();
 
     document.getElementById("validation-results").style.display = "none";
     document.getElementById("trivy-results").style.display = "none";
@@ -585,7 +585,7 @@ function validateDockerfile() {
             let words = line.split(' ');
             lineCount++;
 
-            if (words[0] == "#" || line.startsWith("\t") || line.startsWith("\t\\") || line.startsWith("\t&&") || line.trim() === '' || line.indexOf(' ') == 0 || words[0] === "FROM" || words[0] === "LABEL" || words[0] === "USER" || words[0] === "MAINTAINER" || words[0] === "STOPSIGNAL" || words[0] === "EXPOSE" || words[0] === "ENV" || words[0] === "ADD" || words[0] === "COPY" || words[0] === "ARG" || words[0] === "RUN" || words[0] === "CMD" || words[0] === "ENTRYPOINT" || words[0] === "ONBUILD" || words[0] === "HEALTHCHECK" || words[0] === "SHELL" || words[0] === "VOLUME" || words[0] === "WORKDIR") { }
+            if (words[0].startsWith("#") || line.startsWith("\t") || line.startsWith("\t\\") || line.startsWith("\t&&") || line.trim() === '' || line.indexOf(' ') == 0 || words[0] === "FROM" || words[0] === "LABEL" || words[0] === "USER" || words[0] === "MAINTAINER" || words[0] === "STOPSIGNAL" || words[0] === "EXPOSE" || words[0] === "ENV" || words[0] === "ADD" || words[0] === "COPY" || words[0] === "ARG" || words[0] === "RUN" || words[0] === "CMD" || words[0] === "ENTRYPOINT" || words[0] === "ONBUILD" || words[0] === "HEALTHCHECK" || words[0] === "SHELL" || words[0] === "VOLUME" || words[0] === "WORKDIR") { }
             else {
                 setFailureStatus(lineCount, "*", "Not a valid instruction", "FROM,LABEL,USER,MAINTAINER,\nSTOPSIGNAL,EXPOSE,ENV,ADD,\nCOPY,ARG,RUN,CMD,ENTRYPOINT,\nONBUILD,HEALTHCHECK,SHELL,VOLUME");
             }
@@ -607,7 +607,7 @@ function validateDockerfile() {
 
             if (words[0] === "EXPOSE") {
                 if (words[1] && words[2]) {
-                    if ((!isNaN(words[1]) && (words[2] == "TCP" || words[2] == "UDP"))) {
+                    if ((!isNaN(words[1]) || (words[2] == "TCP" || words[2] == "UDP"))) {
                         requestValidationPassed = true
                     }
                     else
@@ -744,7 +744,10 @@ function validateDockerfile() {
                     }
                     else if (line.includes("install")) {
                         if (line.includes("-y")) {
-                            requestValidationPassed = true;
+                            if ((line.match(/-y/g).length) === (line.match(/install/g).length))
+                                requestValidationPassed = true;
+                            else
+                                validateExecForm(line) ? requestValidationPassed = true : setFailureStatus(lineCount, "RUN", "Please enter the RUN install instruction in non-interactive mode for every install", "RUN yum install -y packageName && yum -y install httpd")
                         }
                         else {
                             validateExecForm(line) ? requestValidationPassed = true : setFailureStatus(lineCount, "RUN", "Please enter the RUN install instruction in non-interactive mode", "RUN yum -y install httpd")
