@@ -754,22 +754,25 @@ function validateDockerfile() {
             if (words[0] === "RUN") {
                 if (words[1]) {
                     if (line.includes("[") || line.includes("]")) {
-                        if (line.includes("signed-by")) {
-                            if (line.includes("=") && line.includes("[") && line.includes("]"))
-                                requestValidationPassed = true
-                            else
-                                setFailureStatus(lineCount, "RUN", "Make sure to use key-value pair and open/close the quotations properly", 'RUN echo \'deb [ signed-by=/etc/apt/keyrings/mysql.gpg ] http://repo.mysql.com/apt/debian/ bullseye mysql-8.0\' > /etc/apt/sources.list.d/mysql.list')
-                        }
-                        else if (validateExecForm(line)) {
-                            if (validateQuotes(line))
-                                requestValidationPassed = true
-                            else
-                                setFailureStatus(lineCount, "RUN", "Make sure to open/close the quotations properly", 'RUN ["/bin/bash", "-c", "echo hello"]')
-                        }
+                        // if (line.includes("signed-by")) {
+                        //     if (line.includes("=") && line.includes("[") && line.includes("]"))
+                        //         requestValidationPassed = true
+                        //     else
+                        //         setFailureStatus(lineCount, "RUN", "Make sure to use key-value pair and open/close the quotations properly", 'RUN echo \'deb [ signed-by=/etc/apt/keyrings/mysql.gpg ] http://repo.mysql.com/apt/debian/ bullseye mysql-8.0\' > /etc/apt/sources.list.d/mysql.list')
+                        // }
+                        // else if (validateExecForm(line)) {
+                        //     if (validateQuotes(line))
+                        if (line.includes("[") && line.includes("]"))
+                            requestValidationPassed = true
+                        // else
+                        //     setFailureStatus(lineCount, "RUN", "Make sure to open/close the quotations properly", 'RUN ["/bin/bash", "-c", "echo hello"]')
+
                         else
                             setFailureStatus(lineCount, "RUN", "RUN should have properly enclosed argument", 'RUN ["/bin/bash", "-c", "echo hello"]')
+
                     }
-                    else if (line.includes("install")) {
+
+                    if (line.includes("install")) {
                         if (line.includes("-y")) {
                             if ((line.match(/-y/g).length) === (line.match(/ install /g).length))
                                 requestValidationPassed = true;
@@ -783,9 +786,8 @@ function validateDockerfile() {
                     else
                         requestValidationPassed = true;
                 }
-                else {
+                else
                     setFailureStatus(lineCount, "RUN", "RUN should have atleast one arguments", 'RUN yum -y update');
-                }
             }
 
             if (words[0] === "CMD") {
