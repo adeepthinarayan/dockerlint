@@ -15,6 +15,19 @@ function setFailureStatus(linenum, cmd, description, suggestion) {
 
     console.log(finalResponse);
 }
+function setWarningStatus(linenum, cmd, description, suggestion) {
+
+    requestValidationPassed = true;
+    response = {
+        lineNumber: linenum,
+        command: cmd,
+        desc: description,
+        suggestion: suggestion
+    }
+    finalResponse.push(response);
+
+    console.log(finalResponse);
+}
 
 function validateQuotes(instr) {
     let countSingle = 0;
@@ -71,9 +84,12 @@ function displayTrivyResults(data) {
         );
         console.log(Misconfigurations);
     }
-    if (Misconfigurations == '')
+    if (Misconfigurations == '') {
         document.getElementById("trivy-results-status").style.display = "flex";
+        document.getElementById("table-trivy-validation").style.display = "none";
+    }
     else {
+        document.getElementById("table-trivy-validation").style.display = "block";
         document.getElementById("trivy-results-status").style.display = "none";
         document.getElementById("trivy-results-noValidationError").style.display = "flex";
     }
@@ -607,14 +623,20 @@ function validateDockerfile() {
 
             if (words[0] === "EXPOSE") {
                 if (words[1] && words[2]) {
-                    if ((!isNaN(words[1]) || (words[2] == "TCP" || words[2] == "UDP"))) {
+                    if ((!isNaN(words[1]) || (words[2] == "TCP" || words[2] == "UDP" || (!isNaN(words[1].substring(0, 2)) && (words[1].includes("/tcp") || words[1].includes("/udp")))))) {
                         requestValidationPassed = true
                     }
                     else
                         setFailureStatus(lineCount, "EXPOSE", "The first argument must be port number and second should be TCP(OR)UDP", "EXPOSE 80 TCP")
                 }
                 else if (words[1]) {
-                    if (words[1].includes("/tcp") || words[1].includes("/udp")) {
+                    if (words[1].includes("$") || words[1].includes("{") || words[1].includes("}")) {
+                        if (words[1].startsWith("${") && words[1].endsWith("}"))
+                            requestValidationPassed = true
+                        else
+                            setFailureStatus(lineCount, "EXPOSE", "The argument should have a proper closed/open braces with $", "EXPOSE ${http_port}")
+                    }
+                    else if (words[1].includes("/tcp") || words[1].includes("/udp")) {
                         if (typeof words[1].substring(0, words[1].indexOf('/tcp')) == 'number' || typeof words[1].substring(0, words[1].indexOf('/udp')) == 'number') {
                             requestValidationPassed = true
 
@@ -678,8 +700,7 @@ function validateDockerfile() {
                 else if (words[1]) {
                     if (words[1].includes("="))
                         requestValidationPassed = true;
-                    else
-                        setFailureStatus(lineCount, "ARG", "1 warning-syntax doesn't contain any value", 'ARG CMD=Thinknyx');
+                    else setWarningStatus(lineCount, "ARG", "ARG should have atleast one argument", 'ARG CMD=Thinknyx')
                 }
                 else
                     setFailureStatus(lineCount, "ARG", "ARG should have atleast one argument", 'ARG CMD=Thinknyx')
@@ -733,7 +754,13 @@ function validateDockerfile() {
             if (words[0] === "RUN") {
                 if (words[1]) {
                     if (line.includes("[") || line.includes("]")) {
-                        if (validateExecForm(line)) {
+                        if (line.includes("signed-by")) {
+                            if (line.includes("=") && line.includes("[") && line.includes("]"))
+                                requestValidationPassed = true
+                            else
+                                setFailureStatus(lineCount, "RUN", "Make sure to use key-value pair and open/close the quotations properly", 'RUN echo \'deb [ signed-by=/etc/apt/keyrings/mysql.gpg ] http://repo.mysql.com/apt/debian/ bullseye mysql-8.0\' > /etc/apt/sources.list.d/mysql.list')
+                        }
+                        else if (validateExecForm(line)) {
                             if (validateQuotes(line))
                                 requestValidationPassed = true
                             else
@@ -744,7 +771,7 @@ function validateDockerfile() {
                     }
                     else if (line.includes("install")) {
                         if (line.includes("-y")) {
-                            if ((line.match(/-y/g).length) === (line.match(/install/g).length))
+                            if ((line.match(/-y/g).length) === (line.match(/ install /g).length))
                                 requestValidationPassed = true;
                             else
                                 validateExecForm(line) ? requestValidationPassed = true : setFailureStatus(lineCount, "RUN", "Please enter the RUN install instruction in non-interactive mode for every install", "RUN yum install -y packageName && yum -y install httpd")
