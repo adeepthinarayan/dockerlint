@@ -25,4 +25,4 @@ RUN npm install
 # RUN npm ci --only=production
 
 EXPOSE 3000
-CMD [ "node", "assets/js/server.js" ]
+CMD [ "node", "js/server.js" ]
