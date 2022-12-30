@@ -1761,9 +1761,17 @@ section {
 
 #trivy-results-status {
   display: none;
+  color: #fff;
 }
 
 #trivy-results-noValidationError {
+  display: none;
+}
+
+#trivy-results-bestPractices {
+  display: none;
+}
+#processing {
   display: none;
 }
 /* For textarea line numbers */
@@ -1811,7 +1819,7 @@ body {
   position: relative;
   z-index: 1;
   width: calc(100% - 58px);
-  height: 150px;
+  height: 200px;
   min-height: 150px;
   max-height: 90vh;
   margin-left: 58px;
@@ -1867,4 +1875,123 @@ body {
   background-color: #000;
   color: #fff;
   padding: 5px;
+}
+.heading3 {
+  color: #149f6e;
+  padding: 5px;
+}
+/* Display for the processing animation */
+.dot {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+}
+.dot1 {
+  background-color: #fff;
+  animation: jump-up 0.6s 0.1s linear infinite;
+}
+.dot2 {
+  background-color: #149f6e;
+  animation: jump-up 0.6s 0.2s linear infinite;
+}
+.dot3 {
+  background-color: #fff;
+  animation: jump-up 0.6s 0.3s linear infinite;
+}
+@keyframes jump-up {
+  50% {
+    transform: translate(0, 15px);
+  }
+}
+
+#processing {
+  text-align: center;
+  justify-content: center;
+  display: flex;
+}
+.processing-header {
+  text-align: center;
+  padding-top: 2rem;
+}
+
+#processRequest {
+  display: none;
+}
+
+#trivy {
+  color: #fff;
+}
+.box {
+  justify-content: center;
+  align-items: center;
+  display: flex;
+}
+
+#policy {
+  color: #fff;
+}
+.heading6 {
+  color: #149f6e;
+  font-weight: bold;
+}
+
+.overlay {
+  position: fixed;
+  top: 200px;
+  z-index: 10;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.7);
+  transition: opacity 500ms;
+  visibility: hidden;
+  opacity: 0;
+}
+.overlay:target {
+  visibility: visible;
+  opacity: 1;
+}
+
+.popup {
+  margin: 70px auto;
+  padding: 20px;
+  background: #fff;
+  border-radius: 5px;
+  width: 70%;
+  position: relative;
+  transition: all 5s ease-in-out;
+  justify-content: center;
+  align-items: center;
+}
+
+.popup h2 {
+  margin-top: 0;
+  color: #333;
+  font-family: Tahoma, Arial, sans-serif;
+}
+.popup .close {
+  position: absolute;
+  top: 20px;
+  right: 30px;
+  transition: all 200ms;
+  font-size: 30px;
+  font-weight: bold;
+  text-decoration: none;
+  color: #333;
+}
+.popup .close:hover {
+  color: #06d85f;
+}
+.popup .content {
+  max-height: 30%;
+  overflow: auto;
+}
+
+@media screen and (max-width: 700px) {
+  .box {
+    width: 70%;
+  }
+  .popup {
+    width: 70%;
+  }
 }

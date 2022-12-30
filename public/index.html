@@ -27,6 +27,7 @@
   <link href="assets/vendor/remixicon/remixicon.css" rel="stylesheet">
   <link href="assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
 
+
   <!-- Template Main CSS File -->
   <link href="assets/css/style.css" rel="stylesheet">
 
@@ -88,11 +89,38 @@
           </div> 
           <label for="dockercontent" id="content-validation"></label>
         </div>
-        <button type="button" onclick="validateDockerfile();document.getElementById('results').scrollIntoView();" id="button" class="btn-get-started scrollto">SUBMIT</button>
+        <div>
+
+       </div>
+       
+      <div class="box" >
+        <a class="privacy" href="#popup1">View privacy policy</a>
+      </div>
+      <div id="popup1" class="overlay">
+        <div class="popup">
+          <h2>Privacy Policy/Terms & Conditions</h2>
+          <a class="close" href="#">&times;</a>
+          <div class="content">
+            At Thinknyx Technologies, we collect and manage user data according to the following privacy, with the goal of incorporating our company values: transparency, accessibility,sanity and usability.<br/> We don't share your personal information with third parties.</p>
+          </div>
+        </div>
+      </div>
+
+        <button type="button" onclick="validateDockerfile();document.getElementById('processRequest').scrollIntoView();" id="button" class="btn-get-started scrollto">SUBMIT</button>
 
       </form>
         </div>
+
+        <div id="processRequest">
+          <div id="processing">
+            <div class="dot dot1"></div>
+            <div class="dot dot2"></div>
+            <div class="dot dot3"></div> <br/>    
+          </div>
+          <h5 class="processing-header">Please wait while we are processing..</h5>
+        </div>
         <div id="results">
+          
         <div id="validation-results">
           <h2><span class="heading">VALIDATION RESULTS</span></h2>
           <table class="table" id="table-validate">
@@ -109,10 +137,11 @@
           </table>
         </div>
 
-        <div id="trivy-results">
-          <h2><span class="heading">TRIVY RESULTS</span></h2>
-          <h6 id="trivy-results-noValidationError">No validation errors!!</h6>
-          <h6 id="trivy-results-status">No errors found!!</h6>
+    
+        <div id="trivy-results">        
+          <h2 id="trivy-results-noValidationError"><span class="heading">No validation errors!!</span></h2>
+          <h5 class="heading3" id="trivy-results-bestPractices">Below are the recommended best practices and methods for building efficient images:</h5>
+          <h4 id="trivy-results-status">You are following the best practices and building efficient images!Congratulations!</h4>
           <table class="table" id="table-trivy-validation">
             <thead>
               <tr>
@@ -125,6 +154,7 @@
           
             <tbody class="trivy-body" id="trivy-body"></tbody>
           </table>
+          <h5 class="heading3">We would like to send a big thanks to <a href="https://trivy.dev/" title="Know more about Trivy" target="_blank"><span id="trivy">TRIVY</span></a> and thousands of contributors that help make open source great!</h5>
         </div> 
       </div>
       </body>
@@ -237,7 +267,7 @@
 
     <div class="container">
       <div class="copyright">
-        Copyright <strong><span> &copy; 2022 Thinknyx</span></strong>|Powered by Thinknyx
+        Copyright <strong><span> &copy; 2023 Thinknyx</span></strong>|Powered by Thinknyx
       </div>
       <div class="credits">
         <!-- All the links in the footer should remain intact. -->

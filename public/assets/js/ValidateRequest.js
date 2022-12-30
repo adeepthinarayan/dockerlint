@@ -67,7 +67,7 @@ function displayValidationErrors() {
 
     }
     document.getElementById("validation-results").style.display = "flex";
-
+    document.getElementById("processRequest").style.display = "none";
 }
 
 function displayTrivyResults(data) {
@@ -84,7 +84,10 @@ function displayTrivyResults(data) {
         );
         console.log(Misconfigurations);
     }
+
+    document.getElementById("processRequest").style.display = "none";
     if (Misconfigurations == '') {
+
         document.getElementById("trivy-results-status").style.display = "flex";
         document.getElementById("table-trivy-validation").style.display = "none";
     }
@@ -92,7 +95,9 @@ function displayTrivyResults(data) {
         document.getElementById("table-trivy-validation").style.display = "block";
         document.getElementById("trivy-results-status").style.display = "none";
         document.getElementById("trivy-results-noValidationError").style.display = "flex";
+        document.getElementById("trivy-results-bestPractices").style.display = "flex";
     }
+
 
 
     for (var i = 0, len = Misconfigurations.length; i < len; i++) {
@@ -558,7 +563,7 @@ function validateEmailAndContent() {
 }
 
 function validateDockerfile() {
-
+    document.getElementById("processRequest").style.display = "block";
 
     $('#validation-body tr').remove();
     $('#trivy-body tr').remove();
